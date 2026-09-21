@@ -215,6 +215,16 @@ jobs:
           # GCC 4.3.2 predates LTO support (introduced in GCC 4.5), so remove -flto
           sed -i 's/-flto//g' Makefile.Linux
 
+          # glibc 2.5 lacks setns() (added in glibc 2.14 / Linux 3.0+).
+          # Append a fallback stub returning ENOSYS.
+          cat << 'EOF' >> src/common.c
+          #include <errno.h>
+          int setns(int fd, int nstype) {
+              errno = ENOSYS;
+              return -1;
+          }
+          EOF
+
           make -f Makefile.Linux \
             CC="$cc" \
             LN="$cc" \
