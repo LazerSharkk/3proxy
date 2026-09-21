@@ -14,6 +14,10 @@ on:
 permissions:
   contents: write
 
+env:
+  TOOLCHAIN_REPO: "LazerSharkk/bootlin"
+  TOOLCHAIN_TAG: "stable-2024.05-1"
+
 jobs:
   build:
     name: ${{ matrix.name }}
@@ -24,199 +28,119 @@ jobs:
         include:
           - name: linux-amd64
             artifact: 3proxy-linux-amd64
-            cc: gcc
+            tarball: x86-64--musl--stable-2024.05-1.tar.xz
+            sha256: f3cf417d28e7df95bdab632ff837de66ac03145bd0e1dd78cc89aadfa6e31526
+            prefix: x86_64-buildroot-linux-musl-
             cflags: "-O2"
-            ldflags: ""
 
           - name: linux-386
             artifact: 3proxy-linux-386
-            cc: gcc
-            cflags: "-m32 -O2"
-            ldflags: "-m32"
+            tarball: x86-i686--uclibc--stable-2024.05-1.tar.xz
+            sha256: e240d983717e03a8ea7c5ffba71077b555f05f40694f177e23756d2a47656599
+            prefix: i686-buildroot-linux-uclibc-
+            cflags: "-O2"
 
           - name: linux-arm64
             artifact: 3proxy-linux-arm64
-            cc: aarch64-linux-gnu-gcc
+            tarball: aarch64--musl--stable-2024.05-1.tar.xz
+            sha256: f847da1195325525f3f07eef045ef40c6b48464a37e0f7fea77360dfe0bc1aa1
+            prefix: aarch64-buildroot-linux-musl-
             cflags: "-O2"
-            ldflags: ""
 
           - name: linux-armv7
             artifact: 3proxy-linux-armv7
-            cc: arm-linux-gnueabihf-gcc
+            tarball: armv7-eabihf--uclibc--stable-2024.05-1.tar.xz
+            sha256: eec6e21cf9d36ab2e8b9dbf4e26311d3d152927c72550bfe84872858e63bcaf4
+            prefix: arm-buildroot-linux-uclibcgnueabihf-
             cflags: "-march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -O2"
-            ldflags: ""
 
           - name: linux-armv6
             artifact: 3proxy-linux-armv6
-            cc: arm-linux-gnueabi-gcc
+            tarball: armv6-eabihf--uclibc--stable-2024.05-1.tar.xz
+            sha256: 38e3c482368c96f177c164ed098e7022f45adf83d8715cb2f74238a5a7c0622d
+            prefix: arm-buildroot-linux-uclibcgnueabihf-
             cflags: "-march=armv6 -O2"
-            ldflags: ""
 
           - name: linux-armv5
             artifact: 3proxy-linux-armv5
-            cc: arm-linux-gnueabi-gcc
+            tarball: armv5-eabi--uclibc--stable-2024.05-1.tar.xz
+            sha256: c0c616d4f7d6702b8991f83a5a3777137f734e1eb610d4a20297eaef299ec59d
+            prefix: arm-buildroot-linux-uclibcgnueabi-
             cflags: "-march=armv5te -Os"
-            ldflags: ""
+
+          - name: linux-arc700
+            artifact: 3proxy-linux-arc700
+            tarball: arcle-750d--uclibc--stable-2024.05-1.tar.xz
+            sha256: 74b2afe4f915708e81d9b595396ff82fbc841f698a0b78d778a52cf7be668081
+            prefix: arc-buildroot-linux-uclibc-
+            cflags: "-mcpu=arc700 -Os"
 
           - name: linux-mips
             artifact: 3proxy-linux-mips
-            cc: mips-linux-gnu-gcc-10
+            tarball: mips32--uclibc--stable-2024.05-1.tar.xz
+            sha256: 52ed979092edad8100bc0275426e7eccadefa68b908ac35d18d29c385b30e12d
+            prefix: mips-buildroot-linux-uclibc-
             cflags: "-O2"
-            ldflags: ""
 
           - name: linux-mipsel
             artifact: 3proxy-linux-mipsel
-            cc: mipsel-linux-gnu-gcc-10
+            tarball: mips32el--uclibc--stable-2024.05-1.tar.xz
+            sha256: ae4400a934074a3b1b39fb7ec79fb535da4e65b668f2330ca14576d072f6b13e
+            prefix: mipsel-buildroot-linux-uclibc-
             cflags: "-O2"
-            ldflags: ""
 
           - name: linux-ppc
             artifact: 3proxy-linux-ppc
-            cc: powerpc-linux-gnu-gcc
+            tarball: powerpc-e500mc--glibc--stable-2024.05-1.tar.xz
+            sha256: 365e30fda99630e5bcf04c4913f905640025b90cc9d1a4b17cccfc729827d335
+            prefix: powerpc-buildroot-linux-gnu-
             cflags: "-O2"
-            ldflags: ""
-
-          - name: linux-ppc64
-            artifact: 3proxy-linux-ppc64
-            cc: powerpc64-linux-gnu-gcc
-            cflags: "-O2"
-            ldflags: ""
 
           - name: linux-ppc64le
             artifact: 3proxy-linux-ppc64le
-            cc: powerpc64le-linux-gnu-gcc
+            tarball: powerpc64le-power8--glibc--stable-2024.05-1.tar.xz
+            sha256: 8133b74614f880eb8b76730efee77b8fd281c982bfa2791b72c5f836a529530d
+            prefix: powerpc64le-buildroot-linux-gnu-
             cflags: "-O2"
-            ldflags: ""
 
           - name: linux-riscv64
             artifact: 3proxy-linux-riscv64
-            cc: riscv64-linux-gnu-gcc
+            tarball: riscv64-lp64d--musl--stable-2024.05-1.tar.xz
+            sha256: 481c9353467f42d02edf9080954b3c14a75ff7c19ed9e8fbf9cfa67d028587d3
+            prefix: riscv64-buildroot-linux-musl-
             cflags: "-O2"
-            ldflags: ""
-
-          - name: linux-armv5-linux26-glibc25
-            artifact: 3proxy-linux-armv5-linux26-glibc25
-            legacy: true
 
     steps:
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: install modern toolchain
-        if: matrix.legacy != true
+      - name: download and unpack bootlin toolchain
         run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          case "${{ matrix.name }}" in
-            linux-amd64)
-              sudo apt-get install -y gcc
-              ;;
-            linux-386)
-              sudo apt-get install -y gcc gcc-multilib
-              ;;
-            linux-arm64)
-              sudo apt-get install -y gcc-aarch64-linux-gnu
-              ;;
-            linux-armv7)
-              sudo apt-get install -y gcc-arm-linux-gnueabihf
-              ;;
-            linux-armv6|linux-armv5)
-              sudo apt-get install -y gcc-arm-linux-gnueabi
-              ;;
-            linux-mips)
-              sudo apt-get install -y gcc-10-mips-linux-gnu
-              ;;
-            linux-mipsel)
-              sudo apt-get install -y gcc-10-mipsel-linux-gnu
-              ;;
-            linux-ppc)
-              sudo apt-get install -y gcc-powerpc-linux-gnu
-              ;;
-            linux-ppc64)
-              sudo apt-get install -y gcc-powerpc64-linux-gnu
-              ;;
-            linux-ppc64le)
-              sudo apt-get install -y gcc-powerpc64le-linux-gnu
-              ;;
-            linux-riscv64)
-              sudo apt-get install -y gcc-riscv64-linux-gnu
-              ;;
-          esac
-          command -v "${{ matrix.cc }}"
+          mkdir -p "$HOME/toolchain" /tmp/toolchain
+          url="https://github.com/${{ env.TOOLCHAIN_REPO }}/releases/download/${{ env.TOOLCHAIN_TAG }}/${{ matrix.tarball }}"
+          dest="/tmp/toolchain/${{ matrix.tarball }}"
 
-      - name: test legacy toolchain url
-        if: matrix.legacy == true
+          echo "Downloading $url"
+          curl -fL --retry 5 --retry-all-errors "$url" -o "$dest"
+
+          echo "${{ matrix.sha256 }}  $dest" | sha256sum --check --status
+
+          tar -xJ -C "$HOME/toolchain" --strip-components=1 -f "$dest"
+          rm -rf /tmp/toolchain
+
+          echo "$HOME/toolchain/bin" >> $GITHUB_PATH
+
+      - name: build static binary
         run: |
-          curl -IL \
-            --retry 3 \
-            --retry-all-errors \
-            "https://github.com/LazerSharkk/toolchains/releases/download/arm-2008q3-72/arm-2008q3-72-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2"
+          cc="${{ matrix.prefix }}gcc"
+          strip_tool="${{ matrix.prefix }}strip"
 
-      - name: download legacy armv5 toolchain
-        if: matrix.legacy == true
-        run: |
-          mkdir -p "$HOME/toolchain"
-          curl -fL \
-            --retry 5 \
-            --retry-all-errors \
-            "https://github.com/LazerSharkk/toolchains/releases/download/arm-2008q3-72/arm-2008q3-72-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2" \
-            -o /tmp/toolchain.tar.bz2
-          ls -lh /tmp/toolchain.tar.bz2
-          file /tmp/toolchain.tar.bz2
-          tar -xjf /tmp/toolchain.tar.bz2 \
-            -C "$HOME/toolchain"
-          find "$HOME/toolchain" \
-            -name arm-none-linux-gnueabi-gcc \
-            -type f \
-            -print
-
-      - name: install legacy toolchain runtime
-        if: matrix.legacy == true
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y \
-            libc6:i386 \
-            libstdc++6:i386
-
-      - name: build modern target
-        if: matrix.legacy != true
-        env:
-          CC: ${{ matrix.cc }}
-          CFLAGS: ${{ matrix.cflags }}
-          LDFLAGS: ${{ matrix.ldflags }}
-        run: |
-          mkdir -p bin dist
-          make -f Makefile.Linux clean || true
-          make -f Makefile.Linux \
-            CC="$CC" \
-            LN="$CC" \
-            EXTRA_CFLAGS="$CFLAGS" \
-            EXTRA_LDFLAGS="$LDFLAGS"
-
-          cp bin/3proxy "dist/${{ matrix.artifact }}"
-
-          # Use target-specific strip tool if present, otherwise fallback to system strip
-          strip_tool="${CC%-10}"
-          strip_tool="${strip_tool%gcc}strip"
-          "$strip_tool" "dist/${{ matrix.artifact }}" 2>/dev/null || strip "dist/${{ matrix.artifact }}" || true
-
-      - name: build legacy armv5 target
-        if: matrix.legacy == true
-        run: |
-          toolchain="$HOME/toolchain/arm-2008q3"
-          cc="$toolchain/bin/arm-none-linux-gnueabi-gcc"
-          strip_tool="$toolchain/bin/arm-none-linux-gnueabi-strip"
           "$cc" --version
 
           mkdir -p bin dist
           make -f Makefile.Linux clean || true
 
-          # GCC 4.3.2 predates LTO support (introduced in GCC 4.5), so remove -flto
-          sed -i 's/-flto//g' Makefile.Linux
-
-          # glibc 2.5 lacks setns() (added in glibc 2.14 / Linux 3.0+).
-          # Append a fallback stub returning ENOSYS.
+          # Stub setns if targeting older uClibc/Linux headers
           cat << 'EOF' >> src/common.c
           #include <errno.h>
           int setns(int fd, int nstype) {
@@ -229,11 +153,11 @@ jobs:
             CC="$cc" \
             LN="$cc" \
             STATIC=true \
-            EXTRA_CFLAGS="-march=armv5te -Os" \
+            EXTRA_CFLAGS="${{ matrix.cflags }}" \
             EXTRA_LDFLAGS="-static"
 
           cp bin/3proxy "dist/${{ matrix.artifact }}"
-          "$strip_tool" "dist/${{ matrix.artifact }}" || true
+          "$strip_tool" "dist/${{ matrix.artifact }}" 2>/dev/null || strip "dist/${{ matrix.artifact }}" || true
 
       - name: inspect binary
         run: |
