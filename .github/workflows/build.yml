@@ -211,6 +211,10 @@ jobs:
 
           mkdir -p bin dist
           make -f Makefile.Linux clean || true
+
+          # GCC 4.3.2 predates LTO support (introduced in GCC 4.5), so remove -flto
+          sed -i 's/-flto//g' Makefile.Linux
+
           make -f Makefile.Linux \
             CC="$cc" \
             LN="$cc" \
